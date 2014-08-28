@@ -1753,6 +1753,7 @@ def check_dest_vm_network(vm, ip, remote_host, username, password):
             continue
         ping_failed = False
         break
+    runner.session.close()
     if ping_failed:
         raise error.TestFail("Check %s IP failed:%s" % (vm.name,
                                                         ping_result.stdout))
