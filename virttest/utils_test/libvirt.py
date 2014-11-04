@@ -680,8 +680,32 @@ def get_parts_list(session=None):
             parts_line = line.rsplit()
             if len(parts_line) == 4:
                 parts.append(parts_line[3])
-    logging.debug("Find parts: %s" % parts)
+    logging.debug("Find all parts: %s" % parts)
     return parts
+
+
+def get_parts_by_type(session=None):
+    """
+    According given disk_type(scsi, ide, virtio, loop, cdrom, other),
+    Get a dict include disk list.
+    """
+    all_parts = get_parts_list(session=session)
+    type_parts = {"scsi": [], "ide": [], "virtio": [],
+                  "loop": [], "cdrom": [], "other": []}
+    for part in all_parts:
+        if part.startswith("sd"):
+            type_parts["scsi"].append(part)
+        elif part.startswith("hd"):
+            type_parts["ide"].append(part)
+        elif part.startswith("vd"):
+            type_parts["virtio"].append(part)
+        elif part.startswith("sr") or part.startswith("cdrom"):
+            type_parts["cdrom"].append(part)
+        elif part.startswith("loop"):
+            type_parts["loop"].append(part)
+        else:
+            type_parts["other"].append(part)
+    return type_parts
 
 
 def check_actived_pool(pool_name):
